@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     String m_deleteIndexPage1 = "";
     final static int m_REQUEST_CODE_FOR_PAGE2 = 123;
     private boolean m_isFirstTime = true;
+    private String m_jsonFinal;
 
 
     @SuppressLint("MissingInflatedId")
@@ -267,6 +268,12 @@ public class MainActivity extends AppCompatActivity {
         //看刪除前data有幾筆
         if (m_isFirstTime) {
             // 第一次啟動 Activity，執行相應的操作
+            //用setting preference 接收給recyclerView
+            m_jsonFinal = SettingPreference.getInstance().getSample();
+            Gson gsonFinal = new Gson();
+            Type type = new TypeToken<List<DataModel>>(){}.getType();
+            m_data = new ArrayList<>(gsonFinal.fromJson(m_jsonFinal,type));
+            m_Adapter.notifyDataSetChanged();
             // 將 isFirstTime 設置為 false
             m_isFirstTime = false;
         } else {
@@ -316,11 +323,12 @@ public class MainActivity extends AppCompatActivity {
             //0316 SettingPreferences
             SettingPreference.getInstance().setSample(jsonFinal);
 
-//            //用setting preference 接收給recyclerView
-//            m_json = SettingPreference.getInstance().getSample();
-//            Gson gson = new Gson();
-//            Type type = new TypeToken<List<DataModel>>(){}.getType();
-//            m_data = new ArrayList<>(gson.fromJson(m_json,type));
+            //用setting preference 接收給recyclerView
+            m_jsonFinal = SettingPreference.getInstance().getSample();
+            Gson gsonFinal = new Gson();
+            Type type = new TypeToken<List<DataModel>>(){}.getType();
+            m_data = new ArrayList<>(gsonFinal.fromJson(m_jsonFinal,type));
+            m_Adapter.notifyDataSetChanged();
         }
         super.onResume();
     }
