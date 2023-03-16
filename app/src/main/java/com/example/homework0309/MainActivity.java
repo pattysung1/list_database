@@ -22,8 +22,10 @@ import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -307,13 +309,18 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             }
-//            //更新data至shared preference
-//            // 將list轉成Json
+            //更新data至用setting preference
+            // 將list轉成Json
+            Gson gson = new Gson();
+            String jsonFinal = gson.toJson(m_data);
+            //0316 SettingPreferences
+            SettingPreference.getInstance().setSample(jsonFinal);
+
+//            //用setting preference 接收給recyclerView
+//            m_json = SettingPreference.getInstance().getSample();
 //            Gson gson = new Gson();
-//            String json = gson.toJson(m_searchList);
-//
-//            //0313 SettingPreferences
-//            SettingPreference.getInstance().setSample(json);
+//            Type type = new TypeToken<List<DataModel>>(){}.getType();
+//            m_data = new ArrayList<>(gson.fromJson(m_json,type));
         }
         super.onResume();
     }
