@@ -21,7 +21,7 @@ public class SettingPreference {
     }
 
     public String getSample() {
-        return m_sharePref.getString( SAMPLE, "default");
+        return m_sharePref.getString( SAMPLE, "[]");
     }
 
     public void setSample(String value) {

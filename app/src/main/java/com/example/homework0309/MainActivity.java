@@ -45,20 +45,14 @@ public class MainActivity extends AppCompatActivity
     private MyAdapter m_Adapter;
     List<DataModel> m_searchList = new ArrayList<>();
     int m_count = 0;
-    String m_deleteIndexPage1 = "";
-    final static int m_REQUEST_CODE_FOR_PAGE2 = 123;
-//    private boolean m_isFirstTime = true;
+
     private String m_json;
 
-
-    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate( Bundle savedInstanceState )
     {
         super.onCreate( savedInstanceState );
         setContentView( R.layout.activity_main );
-
-//        m_isFirstTime = true;
         m_addButton = findViewById( R.id.addButton );
         m_addButton.setEnabled( false ); //一開始不能按
         m_nameType = findViewById( R.id.edit_name );
@@ -70,69 +64,43 @@ public class MainActivity extends AppCompatActivity
         //把recyclerView 交給 myAdapter
         m_Adapter = new MyAdapter();
         m_recyclerView.setAdapter( m_Adapter );
+        //RecyclerView
+        m_recyclerView.setHasFixedSize( true );
+        m_LayoutManager = new LinearLayoutManager( this, LinearLayoutManager.VERTICAL, false );//直的且不反轉
+        m_recyclerView.setLayoutManager( m_LayoutManager );
 
+        TextWatcher textWatcher = new TextWatcher()
+        {
+            @Override
+            public void beforeTextChanged( CharSequence charSequence, int i, int i1, int i2 )
+            {
+
+            }
+
+            @Override
+            public void onTextChanged( CharSequence charSequence, int i, int i1, int i2 )
+            {
+
+            }
+
+            @Override
+            public void afterTextChanged( Editable editable )
+            {
+                if ( (m_nameType.length() > 0) && (m_ageType.length() > 0) )
+                {
+                    m_addButton.setEnabled( true );
+                }
+                else
+                {
+                    m_addButton.setEnabled( false );
+                }
+            }
+        };
 
         //姓名欄位
-        m_nameType.addTextChangedListener( new TextWatcher()
-        {
-            @Override
-            public void beforeTextChanged( CharSequence charSequence, int i, int i1, int i2 )
-            {
-
-            }
-
-            @Override
-            public void onTextChanged( CharSequence charSequence, int i, int i1, int i2 )
-            {
-
-            }
-
-            @Override
-            public void afterTextChanged( Editable editable )
-            {
-
-                Log.d( "Patty", "name:" + editable );
-                if ( (m_nameType.length() > 0) && (m_ageType.length() > 0) )
-                {
-                    m_addButton.setEnabled( true );
-                }
-                else
-                {
-                    m_addButton.setEnabled( false );
-                }
-            }
-        } );
+        m_nameType.addTextChangedListener( textWatcher );
         //年齡欄位
-        m_ageType.addTextChangedListener( new TextWatcher()
-        {
-            @Override
-            public void beforeTextChanged( CharSequence charSequence, int i, int i1, int i2 )
-            {
-
-            }
-
-            @Override
-            public void onTextChanged( CharSequence charSequence, int i, int i1, int i2 )
-            {
-
-            }
-
-            @Override
-            public void afterTextChanged( Editable editable )
-            {
-
-                Log.d( "Patty", "age:" + editable );
-                if ( (m_nameType.length() > 0) && (m_ageType.length() > 0) )
-                {
-                    m_addButton.setEnabled( true );
-                }
-                else
-                {
-                    m_addButton.setEnabled( false );
-                }
-            }
-        } );
-//        m_nameEditText.addTextChangedListener(new TextWatcher())//研究一下
+        m_ageType.addTextChangedListener( textWatcher );
 
         //ADD按鈕
         m_addButton.setOnClickListener( new View.OnClickListener()
@@ -152,7 +120,6 @@ public class MainActivity extends AppCompatActivity
                 m_Adapter.notifyItemInserted(m_data.size() - 1);
 
                 m_ageType.setText( "" );
-
                 // 將m_data轉成Json存至SettingPreferences
                 Gson gson = new Gson();
                 String json = gson.toJson( m_data );
@@ -162,10 +129,7 @@ public class MainActivity extends AppCompatActivity
             }
         } );
 
-        //RecyclerView
-        m_recyclerView.setHasFixedSize( true );
-        m_LayoutManager = new LinearLayoutManager( this, LinearLayoutManager.VERTICAL, false );//直的且不反轉
-        m_recyclerView.setLayoutManager( m_LayoutManager );
+
 
         //搜尋器
         m_searchView.setOnQueryTextListener( new SearchView.OnQueryTextListener()
@@ -324,10 +288,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onResume()
     {
-//        //看刪除前data有幾筆
-//        if ( m_isFirstTime )
-//        {
-//            // 第一次啟動 Activity，執行相應的操作
             //用setting preference 接收給recyclerView
             m_json = SettingPreference.getInstance().getSample();
             Gson gson = new Gson();
