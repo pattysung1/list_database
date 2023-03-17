@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -41,9 +43,9 @@ public class MainActivity extends AppCompatActivity
     private RecyclerView.LayoutManager m_LayoutManager;
     String m_nameTypeInput = "";
     String m_ageTypeInput = "";
-    private List<DataModel> m_data = new ArrayList<>();
+    private List<Person> m_personList = new ArrayList<>();
     private MyAdapter m_Adapter;
-    List<DataModel> m_searchList = new ArrayList<>();
+    List<Person> m_searchList = new ArrayList<>();
     int m_count = 0;
 
     private String m_json;
@@ -86,6 +88,8 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void afterTextChanged( Editable editable )
             {
+
+                Log.d( "Patty", "name:" + editable );
                 if ( (m_nameType.length() > 0) && (m_ageType.length() > 0) )
                 {
                     m_addButton.setEnabled( true );
@@ -113,16 +117,27 @@ public class MainActivity extends AppCompatActivity
                 int age = Integer.parseInt( m_ageTypeInput ); //轉成int
                 Log.d( "addButton", "name:" + m_nameTypeInput + "age:" + m_ageTypeInput );
 
-                m_data.add( new DataModel( m_count, m_nameTypeInput, age ) );
+                //檢查有沒有重複，有的話不給輸入
+                for (Person p : m_personList ){
+                    if ( (p.getAge() == age) && (p.getName().equals(m_nameTypeInput) ) ){
+                        Toast toast = Toast.makeText(getApplicationContext(), "此筆資料已重複", Toast.LENGTH_SHORT);
+                        toast.show();
+                        return;
+                    }
+                }
+
+                Person person= new Person( m_count, m_nameTypeInput, age );
+                m_personList.add(person);
                 m_count++;
-                Log.d( "Patty", "dataName:" + m_data.get( 0 ).getName() );
-//                m_Adapter.notifyDataSetChanged();//搞清楚和itemchanged差別
-                m_Adapter.notifyItemInserted(m_data.size() - 1);
+                Log.d( "Patty", "dataName:" + m_personList.get( 0 ).getName() );
+
+                m_Adapter.notifyItemInserted( m_personList.size() - 1);
 
                 m_ageType.setText( "" );
+
                 // 將m_data轉成Json存至SettingPreferences
                 Gson gson = new Gson();
-                String json = gson.toJson( m_data );
+                String json = gson.toJson( m_personList );
                 //0313 SettingPreferences
                 SettingPreference.getInstance().setSample( json );
 
@@ -233,8 +248,8 @@ public class MainActivity extends AppCompatActivity
         public void onBindViewHolder( @NonNull MyAdapter.MyViewHolder holder, int position )
         {
             //處理資料細節
-            holder.name.setText( m_data.get( position ).getName() );
-            holder.age.setText( m_data.get( position ).getAge() + "" );
+            holder.name.setText( m_personList.get( position ).getName() );
+            holder.age.setText( m_personList.get( position ).getAge() + "" );
             //刪除資料
             holder.deleteButton.setOnClickListener( new View.OnClickListener()
             {
@@ -242,14 +257,14 @@ public class MainActivity extends AppCompatActivity
                 public void onClick( View view )
                 {
                     Log.v( "Patty", "Click: " + holder.getAdapterPosition( ));
-                    m_data.remove( holder.getAdapterPosition() );
+                    m_personList.remove( holder.getAdapterPosition() );
 //                    m_Adapter.notifyDataSetChanged();
 //                    m_Adapter.notifyItemRemoved( holder.getAdapterPosition( ));
                     m_Adapter.notifyDataSetChanged();
 
                     // 將m_data轉成Json存至SettingPreferences
                     Gson gson = new Gson();
-                    String json = gson.toJson( m_data );
+                    String json = gson.toJson( m_personList );
                     //0313 SettingPreferences
                     SettingPreference.getInstance().setSample( json );
                 }
@@ -260,7 +275,7 @@ public class MainActivity extends AppCompatActivity
         public int getItemCount()
         {
             //幾筆資料
-            return m_data.size();
+            return m_personList.size();
         }
     }
 
@@ -288,26 +303,26 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onResume()
     {
-            //用setting preference 接收給recyclerView
-            m_json = SettingPreference.getInstance().getSample();
-            Gson gson = new Gson();
-            Type type = new TypeToken<List<DataModel>>()
-            {
-            }.getType();
-            m_data = new ArrayList<>( gson.fromJson( m_json, type ) );
-            m_Adapter.notifyDataSetChanged();
+        //用setting preference 接收給recyclerView
+        m_json = SettingPreference.getInstance().getSample();
+        Gson gson = new Gson();
+        Type type = new TypeToken<List<Person>>()
+        {
+        }.getType();
+        m_personList = new ArrayList<>( gson.fromJson( m_json, type ) );
+        m_Adapter.notifyDataSetChanged();
 
 //        //用setting preference 接收
 //        m_json = SettingPreference.getInstance().getSample();
 //        Gson gson = new Gson();
 //        Type type = new TypeToken<List<DataModel>>(){}.getType();
 //        m_data = new ArrayList<>(gson.fromJson(m_json,type));
-            // 將 isFirstTime 設置為 false
+        // 將 isFirstTime 設置為 false
 //            m_isFirstTime = false;
 //        }
 //        else
 //        {
-//            // 從第二
+//            // 從第二個頁面返回到第一個頁面，執行其他的操作
 //            Log.d( "Patty", "onResume_data.size(): " + m_data.size() );
 //
 ////            if ( m_deleteIndexPage1 != null )

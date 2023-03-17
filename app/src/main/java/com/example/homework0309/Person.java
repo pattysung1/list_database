@@ -1,11 +1,12 @@
 package com.example.homework0309;
 
-public class DataModel {
+public class Person
+{
     private String name;
     private int age;
     private int index;
 
-    public DataModel( int index, String name, int age) {
+    public Person( int index, String name, int age) {
         this.index = index;
         this.name = name;
         this.age = age;

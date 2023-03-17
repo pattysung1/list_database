@@ -2,11 +2,9 @@ package com.example.homework0309;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.collection.ArraySet;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,13 +26,13 @@ public class Page2Activity extends AppCompatActivity {
     String TAG = "Patty:P2";
     private RecyclerView m_recyclerView;
     private RecyclerView.LayoutManager m_LayoutManager;
-    private List<DataModel> m_data = new ArrayList<>();
+    private List<Person> m_data = new ArrayList<>();
     private MyAdapter m_Adapter;
     private String m_json;
     TextView m_getSample;
     private List<Integer> m_deleteIndex = new ArrayList<>();;
     String m_deleteIndexString;
-    List<DataModel> m_searchList = new ArrayList<>();
+    List<Person> m_searchList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +42,7 @@ public class Page2Activity extends AppCompatActivity {
         //用setting preference 接收
         m_json = SettingPreference.getInstance().getSample();
         Gson gson = new Gson();
-        Type type = new TypeToken<List<DataModel>>(){}.getType();
+        Type type = new TypeToken<List<Person>>(){}.getType();
         m_data = new ArrayList<>(gson.fromJson(m_json,type));
 
         //用intent接收query
@@ -62,7 +60,7 @@ public class Page2Activity extends AppCompatActivity {
             if ( title.contains( queryReceive ) )
             { // 如果標題包含搜索詞
 //                        m_recyclerView.smoothScrollToPosition( i ); // 滾動到該項目的位置
-                m_searchList.add( new DataModel( index, title, age ) );
+                m_searchList.add( new Person( index, title, age ) );
             }
         }
 
