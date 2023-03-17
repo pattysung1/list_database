@@ -347,7 +347,7 @@ public class MainActivity extends AppCompatActivity
 //        }
 //        else
 //        {
-//            // 從第二個頁面返回到第一個頁面，執行其他的操作
+//            // 從第二
 //            Log.d( "Patty", "onResume_data.size(): " + m_data.size() );
 //
 ////            if ( m_deleteIndexPage1 != null )
