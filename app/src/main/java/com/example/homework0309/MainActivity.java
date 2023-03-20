@@ -47,7 +47,6 @@ public class MainActivity extends AppCompatActivity
     private MyAdapter m_Adapter;
     List<Person> m_searchList = new ArrayList<>();
     int m_count = 0;
-
     private String m_json;
 
     @Override
@@ -115,8 +114,6 @@ public class MainActivity extends AppCompatActivity
                 m_nameTypeInput = m_nameType.getText().toString();
                 m_ageTypeInput = m_ageType.getText().toString();
                 int age = Integer.parseInt( m_ageTypeInput ); //轉成int
-                Log.d( "addButton", "name:" + m_nameTypeInput + "age:" + m_ageTypeInput );
-
                 //檢查有沒有重複，有的話不給輸入
                 for (Person p : m_personList ){
                     if ( (p.getAge() == age) && (p.getName().equals(m_nameTypeInput) ) ){
@@ -132,7 +129,6 @@ public class MainActivity extends AppCompatActivity
                 Log.d( "Patty", "dataName:" + m_personList.get( 0 ).getName() );
 
                 m_Adapter.notifyItemInserted( m_personList.size() - 1);
-
                 m_ageType.setText( "" );
 
                 // 將m_data轉成Json存至SettingPreferences
@@ -140,7 +136,6 @@ public class MainActivity extends AppCompatActivity
                 String json = gson.toJson( m_personList );
                 //0313 SettingPreferences
                 SettingPreference.getInstance().setSample( json );
-
             }
         } );
 
@@ -173,48 +168,14 @@ public class MainActivity extends AppCompatActivity
                 // 獲取用戶輸入的內容
                 String query = m_searchView.getQuery().toString();
 
-                // 在這裡執行搜索操作，例如發送網絡請求或搜索本地數據庫
-                // 在 RecyclerView 中查找符合搜索詞的項目
-                // 取得符合條件的 title List
-//                for ( int i = 0; i < m_data.size(); i++ )
-//                {
-//                    String title = m_data.get( i ).getName();
-//                    int age = m_data.get( i ).getAge();
-//                    int index = m_data.get( i ).getIndex();
-//                    if ( title.contains( query ) )
-//                    { // 如果標題包含搜索詞
-////                        m_recyclerView.smoothScrollToPosition( i ); // 滾動到該項目的位置
-//                        m_searchList.add( new DataModel( index, title, age ) );
-//                    }
-//                }
-//                // 將m_data轉成Json存至SettingPreferences
-//                Gson gson = new Gson();
-//                String json = gson.toJson( m_data );
-//                //0313 SettingPreferences
-//                SettingPreference.getInstance().setSample( json );
-
-//                // 將list轉成Json
-//                Gson gson = new Gson();
-//                String json = gson.toJson( m_searchList );
-//
                 // 把query字串傳到第二頁
                 Intent intent = new Intent( MainActivity.this, Page2Activity.class );
                 intent.putExtra( "searchList", query );
                 startActivity(intent);
-
-                // ***啟動第二頁的 Activity
-//                startActivityForResult( intent, m_REQUEST_CODE_FOR_PAGE2 );
-
             }
         } );
     }
 
-    //新增資料
-//    public void doData() {
-//        data = new ArrayList<>();
-//        Log.d("Patty","Dodata:"+data);
-//
-//    }
     class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder>
     {
         class MyViewHolder extends RecyclerView.ViewHolder
@@ -258,8 +219,6 @@ public class MainActivity extends AppCompatActivity
                 {
                     Log.v( "Patty", "Click: " + holder.getAdapterPosition( ));
                     m_personList.remove( holder.getAdapterPosition() );
-//                    m_Adapter.notifyDataSetChanged();
-//                    m_Adapter.notifyItemRemoved( holder.getAdapterPosition( ));
                     m_Adapter.notifyDataSetChanged();
 
                     // 將m_data轉成Json存至SettingPreferences
@@ -279,27 +238,6 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-//    @Override
-//    protected void onActivityResult( int requestCode, int resultCode, @Nullable Intent data )
-//    {
-//        super.onActivityResult( requestCode, resultCode, data );
-//
-//        switch ( requestCode )
-//        {
-//            case m_REQUEST_CODE_FOR_PAGE2:
-//                if ( resultCode == Activity.RESULT_OK )
-//                {
-//                    m_deleteIndexPage1 = data.getStringExtra( "deleteIndexString" );
-//                    Log.d( "Patty", "onActivityResult接收回傳:  " + m_deleteIndexPage1 );
-//                }
-//                else if ( resultCode == Activity.RESULT_CANCELED )
-//                {
-//
-//                }
-//                break;
-//        }
-//    }
-
     @Override
     protected void onResume()
     {
@@ -311,81 +249,6 @@ public class MainActivity extends AppCompatActivity
         }.getType();
         m_personList = new ArrayList<>( gson.fromJson( m_json, type ) );
         m_Adapter.notifyDataSetChanged();
-
-//        //用setting preference 接收
-//        m_json = SettingPreference.getInstance().getSample();
-//        Gson gson = new Gson();
-//        Type type = new TypeToken<List<DataModel>>(){}.getType();
-//        m_data = new ArrayList<>(gson.fromJson(m_json,type));
-        // 將 isFirstTime 設置為 false
-//            m_isFirstTime = false;
-//        }
-//        else
-//        {
-//            // 從第二個頁面返回到第一個頁面，執行其他的操作
-//            Log.d( "Patty", "onResume_data.size(): " + m_data.size() );
-//
-////            if ( m_deleteIndexPage1 != null )
-////            {
-////                Log.d( "Patty", "m_deleteIndexPage1: " + m_deleteIndexPage1 );
-////                // 從"deleteIndexPage1"中讀取索引(以逗號分隔的字串)
-////                String[] indexes = m_deleteIndexPage1.split( "," ); // 將索引字串以逗號分隔為一個字串陣列
-////                Log.d( "Patty", "indexes: " + indexes.length );
-////                int[] indexesToInt = new int[indexes.length];
-////                //把indexes字串變成數字
-////                for ( int i = 0; i < indexesToInt.length; i++ )
-////                {
-////                    indexesToInt[i] = Integer.parseInt( indexes[i].trim() );
-////                    Log.d( "Patty", "indexesToInt[i]: " + indexesToInt[i] );
-////                }
-////
-////                //印出資料看看
-////                for ( int i = 0; i < m_data.size(); i++ )
-////                {
-////                    Log.d( "Patty", "data.get(i).getIndex(): " + m_data.get( i ).getIndex() );
-////                }
-////                //幾筆資料(給跑迴圈用)
-////                int dataSize = m_data.size();
-////
-////                //**如果indexesToInt裡面的index 和data裡面的Index相同，就刪除那筆data的整筆資料
-////                for ( int i = 0; i < indexesToInt.length; i++ )
-////                {
-////                    int index = indexesToInt[i]; //所要刪掉的index值
-////                    Log.d( "Patty", "index: " + index );
-////                    for ( int j = 0; j < dataSize; j++ )
-////                    {
-////                        int indexInData = m_data.get( j ).getIndex();
-////                        Log.d( "Patty", "indexInData: " + indexInData );
-////                        if ( indexInData == index )
-////                        {
-////                            Log.d( "Patty", "indexInData2: " + indexInData );
-////                            Log.d( "Patty", "indexInData2: " + m_data.get( j ).getIndex() );
-////                            m_data.remove( j );
-////
-////                            m_Adapter.notifyDataSetChanged();
-////                            break;
-////                        }
-////                    }
-////                }
-////            }
-//
-//
-////            //更新data至用setting preference
-////            // 將list轉成Json
-////            Gson gson = new Gson();
-////            String jsonFinal = gson.toJson( m_data );
-////            //0316 SettingPreferences
-////            SettingPreference.getInstance().setSample( jsonFinal );
-////
-//            //用setting preference 接收給recyclerView
-//            m_jsonFinal = SettingPreference.getInstance().getSample();
-//            Gson gsonFinal = new Gson();
-//            Type type = new TypeToken<List<DataModel>>()
-//            {
-//            }.getType();
-//            m_data = new ArrayList<>( gsonFinal.fromJson( m_jsonFinal, type ) );
-//            m_Adapter.notifyDataSetChanged();
-//        }
         super.onResume();
     }
 }

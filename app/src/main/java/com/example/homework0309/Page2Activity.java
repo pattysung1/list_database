@@ -29,9 +29,8 @@ public class Page2Activity extends AppCompatActivity {
     private List<Person> m_data = new ArrayList<>();
     private MyAdapter m_Adapter;
     private String m_json;
-    TextView m_getSample;
-    private List<Integer> m_deleteIndex = new ArrayList<>();;
-    String m_deleteIndexString;
+    private List<String> m_deleteName = new ArrayList<>();
+    private List<Integer> m_deleteAge = new ArrayList<>();
     List<Person> m_searchList = new ArrayList<>();
 
     @Override
@@ -51,15 +50,14 @@ public class Page2Activity extends AppCompatActivity {
         Log.d( "Patty", "intent: " + queryReceive);
 
         //在m_data中，挑選searchView的query
-         //取得符合條件的 title List
+        //取得符合條件的 title List
         for ( int i = 0; i < m_data.size(); i++ )
         {
             String title = m_data.get( i ).getName();
             int age = m_data.get( i ).getAge();
             int index = m_data.get( i ).getIndex();
             if ( title.contains( queryReceive ) )
-            { // 如果標題包含搜索詞
-//                        m_recyclerView.smoothScrollToPosition( i ); // 滾動到該項目的位置
+            {
                 m_searchList.add( new Person( index, title, age ) );
             }
         }
@@ -91,17 +89,15 @@ public class Page2Activity extends AppCompatActivity {
                 deleteButton = itemView.findViewById(R.id.deleteButton);
             }
         }
-
         @NonNull
         @Override
         public MyAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            //產生的view，介紹給Viewholder作為呈現
+            //產生的view，介紹給ViewHolder作為呈現
             View itemView = LayoutInflater
                     .from(parent.getContext())
                     .inflate(R.layout.item,parent,false);
             return new MyViewHolder(itemView);
         }
-
         @Override
         public void onBindViewHolder(@NonNull MyAdapter.MyViewHolder holder, int position) {
             //資料的重點放在這邊(資料的細節)
@@ -113,44 +109,24 @@ public class Page2Activity extends AppCompatActivity {
                 public void onClick(View view) {
                     Log.d("Patty:Page2","Click: " +holder.getAdapterPosition());
                     //找到刪除的資料的index，存到deleteIndex這個Array中
-                    m_deleteIndex.add(m_searchList.get(position).getIndex());
-                    Log.d("Patty:Page2","deleteIndex: " + m_deleteIndex);
+                    m_deleteName.add(m_searchList.get(position).getName());
+                    m_deleteAge.add(m_searchList.get(position).getAge());
 
                     //刪除資料m_searchList
                     m_searchList.remove(holder.getAdapterPosition());
-
-
                     m_Adapter.notifyDataSetChanged();
-//                    m_Adapter.notifyItemRemoved( position);
-
-//                    //把deleteIndex這個Array轉成字串
-//                    ////轉成字串
-//                    StringBuilder sb = new StringBuilder();
-//                    for (Integer i : m_deleteIndex) {
-//                        sb.append(i).append(", ");
-//                    }
-//                    Log.d("Patty", "deleteIndexString: " + sb);
-//                    ////把最後的","刪掉
-//                    m_deleteIndexString = sb.toString();
-//                    if (m_deleteIndexString.length() > 0) {
-//                        m_deleteIndexString = m_deleteIndexString.substring(0, m_deleteIndexString.length() - 2);
-//                    }
-//                    Log.d("Patty:Page2", "deleteIndexString: " + m_deleteIndexString);
-                    //同時刪除m_data資料：把m_deleteIndex裡面的index讀出來，同步在m_data資料中刪除
-                    for ( int i = 0; i < m_deleteIndex.size(); i++ )
+                    for ( int i = 0; i < m_deleteName.size(); i++ )
                     {
-                        int index = m_deleteIndex.get( i ); //所要刪掉的index值
-                        Log.d( "Patty:Page2", "index: " + index );
+                        String name = m_deleteName.get( i ); //所要刪掉的name
+                        int age = m_deleteAge.get( i ); //所要刪掉的age
                         for ( int j = 0; j < m_data.size(); j++ )
                         {
-                            int indexInData = m_data.get( j ).getIndex();
-                            Log.d( "Patty:Page2", "indexInData: " + indexInData );
-                            if ( indexInData == index )
+                            String nameInData = m_data.get( j ).getName();
+                            int ageInData = m_data.get( j ).getAge();
+                            if ( nameInData.equals(name) && (ageInData ==age))
                             {
                                 m_data.remove( j );
-                                Log.d( "Patty:Page2", "onBackPressed: " + m_data.size() );
                                 m_Adapter.notifyDataSetChanged();
-//                                m_Adapter.notifyItemRemoved( j );
                                 break;
                             }
                         }
@@ -163,45 +139,10 @@ public class Page2Activity extends AppCompatActivity {
                 }
             });
         }
-
         @Override
         public int getItemCount() {
             //總共有幾筆資料
             return m_searchList.size();
         }
-    }
-
-    @Override
-    public void onBackPressed() {
-//        //同時刪除m_data資料：把m_deleteIndex裡面的index讀出來，同步在m_data資料中刪除
-//        for ( int i = 0; i < m_deleteIndex.size(); i++ )
-//                {
-//                    int index = m_deleteIndex.get( i ); //所要刪掉的index值
-//                    Log.d( "Patty:Page2", "index: " + index );
-//                    for ( int j = 0; j < m_data.size(); j++ )
-//                    {
-//                        int indexInData = m_data.get( j ).getIndex();
-//                        Log.d( "Patty:Page2", "indexInData: " + indexInData );
-//                        if ( indexInData == index )
-//                        {
-//                            m_data.remove( j );
-//                            Log.d( "Patty:Page2", "onBackPressed: " + m_data.size() );
-//                            m_Adapter.notifyDataSetChanged();
-//                            break;
-//                        }
-//                    }
-//                }
-//        //存檔至setting preference
-//        Gson gson = new Gson();
-//        String json = gson.toJson( m_data );
-//        //0316 SettingPreferences
-//        SettingPreference.getInstance().setSample( json );
-
-        //deleteIndex 要傳回第一頁
-//        Intent resultIntent = new Intent();
-//        resultIntent.putExtra("deleteIndexString", m_deleteIndexString);
-//        Log.d("Patty:Page2", "deleteIndexString是否可以傳: " + m_deleteIndexString);
-//        setResult(Activity.RESULT_OK, resultIntent);
-        super.onBackPressed();
     }
 }
