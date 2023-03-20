@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 public class SettingPreference {
     private static final String SP_NAME = "newbie02030301_SP";
     private static final String SAMPLE = "KEY_SAMPLE";
+    private static final String SAMPLE2 = "KEY_SAMPLE2";
     private static SettingPreference s_singleton;
     private SharedPreferences m_sharePref;
 
@@ -26,5 +27,13 @@ public class SettingPreference {
 
     public void setSample(String value) {
         m_sharePref.edit().putString(SAMPLE, value ).apply();
+    }
+
+    public int getSample2() {
+        return m_sharePref.getInt( SAMPLE2, 0);
+    }
+
+    public void setSample2(int value) {
+        m_sharePref.edit().putInt(SAMPLE2, value ).apply();
     }
 }

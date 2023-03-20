@@ -29,8 +29,7 @@ public class Page2Activity extends AppCompatActivity {
     private List<Person> m_data = new ArrayList<>();
     private MyAdapter m_Adapter;
     private String m_json;
-    private List<String> m_deleteName = new ArrayList<>();
-    private List<Integer> m_deleteAge = new ArrayList<>();
+    private List<Person> m_deletePerson = new ArrayList<>();
     List<Person> m_searchList = new ArrayList<>();
 
     @Override
@@ -108,25 +107,21 @@ public class Page2Activity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     Log.d("Patty:Page2","Click: " +holder.getAdapterPosition());
-                    //找到刪除的資料的index，存到deleteIndex這個Array中
-                    m_deleteName.add(m_searchList.get(position).getName());
-                    m_deleteAge.add(m_searchList.get(position).getAge());
+                    //找到刪除的資料的，存到Array中
+                    m_deletePerson.add(m_searchList.get(position));
 
                     //刪除資料m_searchList
                     m_searchList.remove(holder.getAdapterPosition());
                     m_Adapter.notifyDataSetChanged();
-                    for ( int i = 0; i < m_deleteName.size(); i++ )
+                    for ( int i = 0; i < m_deletePerson.size(); i++ )
                     {
-                        String name = m_deleteName.get( i ); //所要刪掉的name
-                        int age = m_deleteAge.get( i ); //所要刪掉的age
+                        Person person = m_deletePerson.get( i ); //所刪掉的person
                         for ( int j = 0; j < m_data.size(); j++ )
                         {
-                            String nameInData = m_data.get( j ).getName();
-                            int ageInData = m_data.get( j ).getAge();
-                            if ( nameInData.equals(name) && (ageInData ==age))
+                            Person personInData = m_data.get( j );
+                            if (person.getName().equals( personInData.getName()) && person.getAge() == personInData.getAge() )
                             {
                                 m_data.remove( j );
-                                m_Adapter.notifyDataSetChanged();
                                 break;
                             }
                         }

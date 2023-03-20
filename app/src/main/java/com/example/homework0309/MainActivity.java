@@ -5,13 +5,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,7 +41,7 @@ public class MainActivity extends AppCompatActivity
     String m_nameTypeInput = "";
     String m_ageTypeInput = "";
     private List<Person> m_personList = new ArrayList<>();
-    private MyAdapter m_Adapter;
+    private MyAdapter m_adapter;
     List<Person> m_searchList = new ArrayList<>();
     int m_count = 0;
     private String m_json;
@@ -62,11 +60,13 @@ public class MainActivity extends AppCompatActivity
         m_searchButton = findViewById( R.id.searchButton );
 
         //把recyclerView 交給 myAdapter
-        m_Adapter = new MyAdapter();
-        m_recyclerView.setAdapter( m_Adapter );
+        m_adapter = new MyAdapter();
+        m_recyclerView.setAdapter( m_adapter );
         //RecyclerView
         m_LayoutManager = new LinearLayoutManager( this, LinearLayoutManager.VERTICAL, false );//直的且不反轉
         m_recyclerView.setLayoutManager( m_LayoutManager );
+
+        m_count = SettingPreference.getInstance().getSample2();
 
         TextWatcher textWatcher = new TextWatcher()
         {
@@ -120,13 +120,12 @@ public class MainActivity extends AppCompatActivity
                         return;
                     }
                 }
-
                 Person person= new Person( m_count, m_nameTypeInput, age );
                 m_personList.add(person);
                 m_count++;
-                Log.d( "Patty", "dataName:" + m_personList.get( 0 ).getName() );
+                SettingPreference.getInstance().setSample2( m_count );
 
-                m_Adapter.notifyItemInserted( m_personList.size() - 1);
+                m_adapter.notifyItemInserted( m_personList.size() - 1);
                 m_ageType.setText( "" );
 
                 // 將m_data轉成Json存至SettingPreferences
@@ -213,7 +212,7 @@ public class MainActivity extends AppCompatActivity
                 {
                     Log.v( "Patty", "Click: " + holder.getAdapterPosition( ));
                     m_personList.remove( holder.getAdapterPosition() );
-                    m_Adapter.notifyDataSetChanged();
+                    m_adapter.notifyDataSetChanged();
 
                     // 將m_data轉成Json存至SettingPreferences
                     Gson gson = new Gson();
@@ -238,11 +237,9 @@ public class MainActivity extends AppCompatActivity
         //用setting preference 接收給recyclerView
         m_json = SettingPreference.getInstance().getSample();
         Gson gson = new Gson();
-        Type type = new TypeToken<List<Person>>()
-        {
-        }.getType();
+        Type type = new TypeToken<List<Person>>() {}.getType();
         m_personList = new ArrayList<>( gson.fromJson( m_json, type ) );
-        m_Adapter.notifyDataSetChanged();
+        m_adapter.notifyDataSetChanged();
         super.onResume();
     }
 }
