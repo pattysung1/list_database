@@ -33,7 +33,6 @@ import application.SettingPreference;
 
 public class MainActivity extends AppCompatActivity
 {
-    //宣告
     EditText m_nameType;
     EditText m_ageType;
     SearchView m_searchView;
@@ -55,7 +54,7 @@ public class MainActivity extends AppCompatActivity
         super.onCreate( savedInstanceState );
         setContentView( R.layout.activity_main );
         m_addButton = findViewById( R.id.addButton );
-        m_addButton.setEnabled( false ); //一開始不能按
+        m_addButton.setEnabled( false );
         m_nameType = findViewById( R.id.edit_name );
         m_ageType = findViewById( R.id.edit_age );
         m_recyclerView = findViewById( R.id.recyclerView );
@@ -66,7 +65,6 @@ public class MainActivity extends AppCompatActivity
         m_Adapter = new MyAdapter();
         m_recyclerView.setAdapter( m_Adapter );
         //RecyclerView
-        m_recyclerView.setHasFixedSize( true );
         m_LayoutManager = new LinearLayoutManager( this, LinearLayoutManager.VERTICAL, false );//直的且不反轉
         m_recyclerView.setLayoutManager( m_LayoutManager );
 
@@ -139,8 +137,6 @@ public class MainActivity extends AppCompatActivity
             }
         } );
 
-
-
         //搜尋器
         m_searchView.setOnQueryTextListener( new SearchView.OnQueryTextListener()
         {
@@ -148,7 +144,6 @@ public class MainActivity extends AppCompatActivity
             public boolean onQueryTextSubmit( String query )
             {
                 return false;
-
             }
 
             @Override
@@ -167,7 +162,6 @@ public class MainActivity extends AppCompatActivity
                 m_searchList.clear();
                 // 獲取用戶輸入的內容
                 String query = m_searchView.getQuery().toString();
-
                 // 把query字串傳到第二頁
                 Intent intent = new Intent( MainActivity.this, Page2Activity.class );
                 intent.putExtra( "searchList", query );
