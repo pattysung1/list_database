@@ -27,7 +27,7 @@ public class Page2Activity extends AppCompatActivity {
     private RecyclerView m_recyclerView;
     private RecyclerView.LayoutManager m_LayoutManager;
     private List<Person> m_data = new ArrayList<>();
-    private MyAdapter m_Adapter;
+    private MyAdapter m_adapter;
     private String m_json;
     private List<Person> m_deletePerson = new ArrayList<>();
     List<Person> m_searchList = new ArrayList<>();
@@ -68,8 +68,8 @@ public class Page2Activity extends AppCompatActivity {
         m_recyclerView.setLayoutManager(m_LayoutManager);
 
         // 4.關鍵性的工作：要讓recyclerView把調變器整合上來
-        m_Adapter = new MyAdapter();
-        m_recyclerView.setAdapter(m_Adapter);
+        m_adapter = new MyAdapter();
+        m_recyclerView.setAdapter( m_adapter );
     }
 
     // 3.Set Adapter-維護性
@@ -112,7 +112,7 @@ public class Page2Activity extends AppCompatActivity {
 
                     //刪除資料m_searchList
                     m_searchList.remove(holder.getAdapterPosition());
-                    m_Adapter.notifyDataSetChanged();
+                    m_adapter.notifyDataSetChanged();
                     for ( int i = 0; i < m_deletePerson.size(); i++ )
                     {
                         Person person = m_deletePerson.get( i ); //所刪掉的person
